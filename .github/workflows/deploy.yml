@@ -40,7 +40,7 @@ jobs:
         # Build cho nền tảng linux/arm64 để khớp với Graviton của Lambda
         docker buildx build --platform linux/arm64 \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-          --push
+          --push .
 
     - name: Update Lambda Function
       run: |
