@@ -42,9 +42,5 @@ jobs:
           -f taxi-download/Dockerfile \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
           --push taxi-download/
-
-    - name: Update Lambda Function
-      run: |
-        aws lambda update-function-code \
-          --function-name nyc_taxi_ingest_container \
-          --image-uri ${{ steps.login-ecr.outputs.registry }}/nyc-taxi-lambda-repo:latest
+          --provenance=false
+  
