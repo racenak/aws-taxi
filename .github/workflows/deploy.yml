@@ -39,6 +39,7 @@ jobs:
       run: |
         # Build cho nền tảng linux/arm64 để khớp với Graviton của Lambda
         docker buildx build --platform linux/arm64 \
+          -f taxi-download/Dockerfile \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
           --push .
 
