@@ -41,6 +41,6 @@ jobs:
         docker buildx build --platform linux/arm64 \
           -f taxi-download/Dockerfile \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          --provenance=false \
           --push taxi-download/
-          --provenance=false
   
