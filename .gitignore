@@ -211,3 +211,6 @@ __marimo__/
 .terraform/
 *.tfstate
 *.tfstate.*
+*.tfvars
+
+notebook
