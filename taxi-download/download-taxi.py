@@ -17,7 +17,7 @@ s3_client = boto3.client("s3")
 def stream_download_and_upload(year: int, month: str, s3_bucket: str):
     file_name = f"yellow_tripdata_{year}-{month}.parquet"
     file_url = f"{BASE_URL}/trip-data/{file_name}"
-    s3_key = f"{year}/{file_name}"
+    s3_key = f"raw/yellow-tripdata/{year}/{file_name}"
 
     # Check if file exists in S3
     try:
