@@ -1,0 +1,1 @@
+aws batch submit-job --job-name "nyc-taxi-ingest-2026" --job-queue "nyc-taxi-queue" --job-definition "nyc-taxi-job-definition" --container-overrides '{"command": ["python", "download-taxi.py", "--start_year", "2026", "--end_year", "2026", "--s3_bucket", "raw-yellow-taxi-898653659022-ap-southeast-1-an"]}'
