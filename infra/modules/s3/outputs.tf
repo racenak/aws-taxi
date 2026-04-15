@@ -1,19 +1,19 @@
-output "raw_bucket_arn" {
+output "iceberg_warehouse_bucket_arn" {
   description = "ARN của bucket chứa dữ liệu thô"
-  value       = aws_s3_bucket.raw.arn
+  value       = aws_s3_bucket.iceberg-warehouse.arn
 }
 
-output "cleaned_bucket_arn" {
+output "script_bucket_arn" {
   description = "ARN của bucket chứa dữ liệu đã xử lý"
-  value       = aws_s3_bucket.cleaned.arn
+  value       = aws_s3_bucket.script-bucket.arn
 }
 
-output "raw_bucket_id" {
-  description = "Tên (ID) của bucket raw"
-  value       = aws_s3_bucket.raw.id
+output "iceberg_warehouse_bucket_id" {
+  description = "Tên (ID) của bucket iceberg-warehouse"
+  value       = aws_s3_bucket.iceberg-warehouse.id
 }
 
-output "cleaned_bucket_id" {
-  description = "Tên (ID) của bucket cleaned"
-  value       = aws_s3_bucket.cleaned.id
+output "script_bucket_id" {
+  description = "Tên (ID) của bucket script-bucket"
+  value       = aws_s3_bucket.script-bucket.id
 }

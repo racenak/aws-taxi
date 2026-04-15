@@ -1,6 +1,6 @@
 # 1. Môi trường tính toán (Fargate)
 resource "aws_batch_compute_environment" "fargate_env" {
-  name = "${var.project_name}-fargate-env"
+  name = "nyc-taxi-fargate-env"
 
   compute_resources {
     type               = "FARGATE"
@@ -18,7 +18,7 @@ resource "aws_batch_compute_environment" "fargate_env" {
 
 # 2. Hàng đợi Job
 resource "aws_batch_job_queue" "batch_queue" {
-  name     = "${var.project_name}-queue"
+  name     = "nyc-taxi-queue"
   state    = "ENABLED"
   priority = 1
   compute_environment_order {
@@ -29,12 +29,12 @@ resource "aws_batch_job_queue" "batch_queue" {
 
 # 3. Định nghĩa Job
 resource "aws_batch_job_definition" "job_def" {
-  name = "${var.project_name}-job-definition"
+  name = "nyc-taxi-job-definition"
   type = "container"
   platform_capabilities = ["FARGATE"]
 
   container_properties = jsonencode({
-    image      = var.container_image
+    image      = var.repository_url
     fargatePlatformConfiguration = {
       platformVersion = "LATEST"
     }
@@ -42,7 +42,22 @@ resource "aws_batch_job_definition" "job_def" {
       { type = "VCPU", value = "1" },
       { type = "MEMORY", value = "4096" }
     ]
+    networkConfiguration = {
+      assignPublicIp = "ENABLED"
+    }
     executionRoleArn = aws_iam_role.batch_execution_role.arn
-    command          = ["echo", "AWS Batch is running!"]
+    jobRoleArn = aws_iam_role.batch_job_role.arn
+    command = [
+      "python", 
+      "download_with_partition.py", 
+      "--year", "Ref::year", 
+      "--bucket", "Ref::bucket",
+      "--prefix", "raw/raw-yellow-taxi"
+    ]
+    parameters = {
+      year = "2026"
+      s3_bucket  = var.target_s3_bucket_name
+      s3_prefix = "raw/raw-yellow-taxi"
+    }
   })
 }

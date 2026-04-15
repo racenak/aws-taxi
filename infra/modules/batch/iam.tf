@@ -1,6 +1,6 @@
 # Batch Service Role
 resource "aws_iam_role" "batch_service_role" {
-  name = "${var.project_name}-batch-service-role"
+  name = "nyc-taxi-batch-service-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -13,7 +13,7 @@ resource "aws_iam_role" "batch_service_role" {
 
 # Batch Execution Role
 resource "aws_iam_role" "batch_execution_role" {
-  name = "${var.project_name}-batch-execution-role"
+  name = "nyc-taxi-batch-execution-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -25,7 +25,7 @@ resource "aws_iam_role" "batch_execution_role" {
 }
 
 resource "aws_iam_role" "batch_job_role" {
-  name = "${var.project_name}-job-role"
+  name = "nyc-taxi-batch-job-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{

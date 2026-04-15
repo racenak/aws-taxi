@@ -10,4 +10,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy file code của bạn vào container
-COPY download-taxi.py .
+COPY download_with_partition.py .

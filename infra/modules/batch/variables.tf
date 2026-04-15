@@ -1,7 +1,3 @@
-variable "project_name" {
-  type    = string
-}
-
 variable "vpc_id" {
   type        = string
 }
@@ -14,6 +10,9 @@ variable "security_group_ids" {
   type        = list(string)
 }
 
-variable "container_image" {
+variable "repository_url" {
+  type    = string
+}
+variable "target_s3_bucket_name" {
   type    = string
 }
