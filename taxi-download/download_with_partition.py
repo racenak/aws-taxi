@@ -34,13 +34,11 @@ def build_download_url(filename: str) -> str:
 def build_s3_key(prefix: str, download_date: date, filename: str) -> str:
     """
     Partition key by download date.
-    Example: taxi/yellow/year=2026/month=04/day=16/yellow_tripdata_2026-03.parquet
+    Example: taxi/yellow/year=2026/yellow_tripdata_2026-03.parquet
     """
     return (
         f"{prefix}/"
         f"year={download_date.year}/"
-        f"month={download_date.month:02d}/"
-        f"day={download_date.day:02d}/"
         f"{filename}"
     )
 
