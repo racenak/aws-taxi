@@ -66,16 +66,37 @@ resource "aws_emrserverless_application" "this" {
             "spark.sql.catalog.glue_catalog.io-impl"       = "org.apache.iceberg.aws.s3.S3FileIO"
             "spark.sql.catalog.glue_catalog.warehouse"     = "s3://${var.iceberg_warehouse_bucket_id}/"
 
-            # Resource Saving
+            "spark.sql.adaptive.enabled" = "true"
+            "spark.sql.adaptive.coalescePartitions.enabled" = "true"
+            "spark.sql.adaptive.skewJoin.enabled" = "true"
+            "spark.sql.adaptive.advisoryPartitionSizeInBytes" = "256MB"
+
+            # Resource 
             "spark.driver.cores"                   = "1"
-            "spark.driver.memory"                  = "2g"
+            "spark.driver.memory"                  = "6g"
             "spark.executor.cores"                 = "1"
-            "spark.executor.memory"                = "2g"
-            "spark.dynamicAllocation.maxExecutors" = "2"
+            "spark.executor.memory"                = "6g"
+            "spark.dynamicAllocation.maxExecutors" = "6"
+            "spark.dynamicAllocation.enabled" = "true"
+            "spark.dynamicAllocation.minExecutors" = "1"
+            "spark.dynamicAllocation.initialExecutors" = "2"
         }
     }
 
     interactive_configuration {
         studio_enabled = true
+    }
+
+    monitoring_configuration {
+      cloudwatch_logging_configuration {
+        enabled                = true
+        log_group_name         = "/aws/emr-serverless/example"
+        log_stream_name_prefix = "spark-logs"
+
+        log_types {
+          name   = "SPARK_DRIVER"
+          values = ["STDOUT", "STDERR"]
+        }
+      }
     }
 }

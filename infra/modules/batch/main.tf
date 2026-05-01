@@ -50,14 +50,9 @@ resource "aws_batch_job_definition" "job_def" {
     command = [
       "python", 
       "download_with_partition.py", 
-      "--year", "Ref::year", 
+      "--year", "2026", 
       "--bucket", "Ref::bucket",
       "--prefix", "raw/raw-yellow-taxi"
     ]
-    parameters = {
-      year = "2026"
-      s3_bucket  = var.target_s3_bucket_name
-      s3_prefix = "raw/raw-yellow-taxi"
-    }
   })
 }

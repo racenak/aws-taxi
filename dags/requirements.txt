@@ -1,0 +1,29 @@
+# Apache Airflow Dependencies for Taxi ETL DAGs
+# Install with: pip install -r dags/requirements.txt
+
+# Core Airflow
+apache-airflow>=2.7.0
+apache-airflow-providers-apache-spark>=4.5.0
+apache-airflow-providers-amazon>=8.0.0
+
+# PySpark
+pyspark>=3.5.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# AWS
+boto3>=1.26.0
+botocore>=1.29.0
+
+# Utilities
+python-dateutil>=2.8.2
+requests>=2.31.0
+
+# Optional: Slack/Email notifications
+slack-sdk>=3.23.0
+sendgrid>=6.10.0
+
+# Optional: Monitoring
+prometheus-client>=0.17.0

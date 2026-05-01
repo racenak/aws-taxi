@@ -70,7 +70,11 @@ resource "aws_iam_policy" "combined_policy" {
       {
         Action   = ["s3:GetObject", "s3:ListBucket", "s3:PutObject", "s3:DeleteObject"]
         Effect   = "Allow"
-        Resource = ["${var.iceberg_warehouse_bucket_arn}", "${var.iceberg_warehouse_bucket_arn}/*"]
+        Resource = ["${var.iceberg_warehouse_bucket_arn}", 
+                    "${var.iceberg_warehouse_bucket_arn}/*",
+                    "${var.script_bucket_arn}",
+                    "${var.script_bucket_arn}/*"
+                  ]
       },
       {
         Action   = ["glue:GetDatabase", 
