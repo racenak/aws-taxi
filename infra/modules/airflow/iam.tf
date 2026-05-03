@@ -8,19 +8,44 @@ resource "aws_iam_role" "mwaa_execution_role" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "airflow.amazonaws.com"
+          Service = ["airflow-env.amazonaws.com", "airflow.amazonaws.com"]
         }
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy" "mwaa_cloudwatch_policy" {
-  name   = "mwaa-cloudwatch-policy"
+resource "aws_iam_role_policy" "mwaa_execution_policy" {
+  name   = "mwaa-execution-policy"
   role   = aws_iam_role.mwaa_execution_role.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      {
+        Effect = "Allow"
+        Action = "airflow:PublishMetrics"
+        Resource = "arn:aws:airflow:ap-southeast-1::environment/MyAirflowEnvironment"
+      },
+      {
+        Effect = "Deny"
+        Action = "s3:ListAllMyBuckets"
+        Resource = [
+          var.script_bucket_arn,
+          "${var.script_bucket_arn}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject*",
+          "s3:GetBucket*",
+          "s3:List*"
+        ]
+        Resource = [
+          var.script_bucket_arn,
+          "${var.script_bucket_arn}/*"
+        ]
+      },
       {
         Effect = "Allow"
         Action = [
@@ -29,77 +54,81 @@ resource "aws_iam_role_policy" "mwaa_cloudwatch_policy" {
           "logs:PutLogEvents",
           "logs:GetLogEvents",
           "logs:GetLogRecord",
-          "logs:GetQueryResults",
-          "logs:DescribeLogStreams"
+          "logs:GetLogGroupFields",
+          "logs:GetQueryResults"
         ]
-        Resource = "arn:aws:logs:*:*:log-group:/aws/airflow/*"
+        Resource = [
+          "arn:aws:logs:ap-southeast-1:898653659022:log-group:airflow-MyAirflowEnvironment-*",
+          "arn:aws:logs:ap-southeast-1:898653659022:log-group:airflow-MyAirflowEnvironment-*:*"
+        ]
       },
       {
         Effect = "Allow"
         Action = [
-          "cloudwatch:PutMetricData"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "mwaa_s3_policy" {
-  name   = "mwaa-s3-policy"
-  role   = aws_iam_role.mwaa_execution_role.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:ListBucket",
-          "s3:GetBucketVersioning"
+          "logs:DescribeLogGroups"
         ]
         Resource = [
-          "${var.script_bucket_arn}/airflow/*"
+          "*"
         ]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "mwaa_sqs_policy" {
-  name   = "mwaa-sqs-policy"
-  role   = aws_iam_role.mwaa_execution_role.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
+      },
+      {
+        Effect = "Allow"
+        Action = "cloudwatch:PutMetricData"
+        Resource = "*"
+      },
       {
         Effect = "Allow"
         Action = [
-          "sqs:SendMessage",
-          "sqs:ReceiveMessage",
+          "sqs:ChangeMessageVisibility",
           "sqs:DeleteMessage",
-          "sqs:GetQueueAttributes"
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl",
+          "sqs:ReceiveMessage",
+          "sqs:SendMessage"
         ]
-        Resource = "arn:aws:sqs:*:*:*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "mwaa_kms_policy" {
-  name   = "mwaa-kms-policy"
-  role   = aws_iam_role.mwaa_execution_role.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
+        Resource = "arn:aws:sqs:ap-southeast-1::*:airflow-celery-*"
+      },
       {
         Effect = "Allow"
         Action = [
           "kms:Decrypt",
-          "kms:GenerateDataKey"
+          "kms:DescribeKey",
+          "kms:GenerateDataKey*",
+          "kms:Encrypt"
         ]
-        Resource = "*"
+        NotResource = "arn:aws:kms:*::key/*"
+        Condition = {
+          StringLike = {
+            "kms:ViaService" = [
+              "sqs.ap-southeast-1.amazonaws.com"
+            ]
+          }
+        }
       }
+    ]
+  })
+}
+
+
+resource "aws_iam_role_policy" "mwaa_execution_batch_policy" {
+  name  = "mwaa-execution-batch-policy"
+  role   = aws_iam_role.mwaa_execution_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "batch:SubmitJob",
+        "batch:DescribeJobs",
+        "batch:TerminateJob",
+        "batch:ListJobs"
+      ],
+      "Resource": [
+        "${var.batch_job_queue_arn}/*",
+        "${var.batch_job_definition_arn}/*"
+      ]
+    }
     ]
   })
 }

@@ -13,3 +13,7 @@ output "batch_security_group_id" {
 output "airflow_security_group_id" {
   value = aws_security_group.airflow_sg.id
 }
+
+output "private_subnet_id" {
+  value = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
+}

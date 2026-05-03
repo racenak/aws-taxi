@@ -93,8 +93,8 @@ def upload_to_s3(local_path: str, bucket: str, key: str) -> None:
     except (BotoCoreError, ClientError) as exc:
         log.error("S3 upload failed: %s", exc)
         raise
-bucket, prefix, download_date, results
-def save_report():
+
+def save_report(bucket, prefix, download_date, results):
     run_id = os.environ.get("AIRFLOW_RUN_ID", "unknown").replace(":", "_").replace("+", "_")
     report_key = f"{prefix}/reports/year={download_date.year}/{run_id}.json"
     report_body = json.dumps({"status": "completed", "results": results})
@@ -176,7 +176,7 @@ def run(target_year: int, bucket: str , prefix: str ) -> dict:
             if tmp_path and os.path.exists(tmp_path):
                 os.remove(tmp_path)
                 log.info("Temp file cleaned up.")
-save_report(bucket, prefix, download_date, results)
+    save_report(bucket, prefix, download_date, results)
     
     return {"status": "completed", "results": results}
 
