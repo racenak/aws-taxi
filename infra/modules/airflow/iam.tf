@@ -58,8 +58,7 @@ resource "aws_iam_role_policy" "mwaa_execution_policy" {
           "logs:GetQueryResults"
         ]
         Resource = [
-          "arn:aws:logs:ap-southeast-1:898653659022:log-group:airflow-MyAirflowEnvironment-*",
-          "arn:aws:logs:ap-southeast-1:898653659022:log-group:airflow-MyAirflowEnvironment-*:*"
+          "arn:aws:logs:ap-southeast-1::log-group:airflow-*"
         ]
       },
       {
