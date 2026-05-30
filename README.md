@@ -21,7 +21,7 @@
 - Provide reproducible infrastructure-as-code setup for the entire pipeline
 
 ## Architecture
-![Architecture](.\media\Architecture.svg)
+![Architecture](media/Architecture.svg)
 
 ## Folder Structure
 
@@ -161,7 +161,7 @@ aws emr-serverless start-job-run \
 
 ### Visualization
 - User PowerBI connect to Athena with `Data Connectvity Mode` is `Import`
-![Dashboard](.\media\Dashboard.JPG)
+![Dashboard](/media/Dashboard.JPG)
 
 ### Auto Workflow
 - Use Airflow for automation these task
